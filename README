@@ -17,7 +17,7 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
    * NetFlow v5, v9, and IPFIX are fully supported.
 
      Support of v9/IPFIX is adding flexibility to exporting of flow data
-     plus greater visibility of traffic, letting export many additional fields
+     plus greater visibility of traffic, allowing to export many additional fields
      besides what was possible in v5 era. Such as
      
    * IPv6 option headers, IPv4 options, TCP options, ethernet type, dot1q
@@ -26,39 +26,39 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
    * Full IPv6 support,
 
    * NAT translations events (from conntrack) using NetFlow Event Logging (NEL).
-     This is standardized way for v9/IPFIXr, but module export such events even
-     for v5 collectors via specially crafted pseudo-records.
+     This is standardized way for v9/IPFIXr, but for v5 collectors such events 
+     are exported via specially crafted netflow pseudo-records with zero counts.
 
    * Deterministic (systematic count-based), random and hash Flow Sampling.
      With appropriate differences in support of v5, v9, and IPFIX.
 
    * SNMP agent (for net-snmp) for remote management and monitoring.
 
-   * Options Templates (v9/IPFIX) let export useful statistical,
+   * Options Templates (v9/IPFIX) allow to export useful statistical,
      configurational, and informational records to collector.
      Such as metering, exporting, sampling stat and reliability stat, sampling 
      configuration, network devices ifName, ifDescr list.
 
    * Tested to compile and work out of the box on Centos 5, 6, 7, Debian and
-   * Ubuntu. Many vanilla Linux kernels since 2.6.18 up to the latest (as of
-   * writing is 3.19) are supported and tested.
+     Ubuntu. Many vanilla Linux kernels since 2.6.18 up to the latest (as of
+     writing is 3.19) are supported and tested.
 
    * Module load time and run-time (via sysctl) configuration.
 
-   * Flexibility in enabling features via ./configure script. This will let you
-     disable features you don't need, which increase compatibility with custom
-     kernels and performance.
+   * Flexibility in enabling features at compile time via ./configure script.
+     This allows to disable features one doesn't need, to increase compatibility
+     with custom kernels and improve performance.
 
-   * SNMP-index translation rules, let convert meaningless and unstable
-     interface indexes (ifIndex) to more meaningful numbering scheme.
+   * SNMP-index translation rules, allow to convert meaningless and unstable
+     interface indexes (ifIndex) to a more meaningful numbering scheme.
 
-   * Easy support for catching mirrored traffic with promisc option. Which is
-     also supporting optional MPLS decapsulation and MPLS-aware NetFlow.
+   * Easy support for catching mirrored traffic with promisc option.
+     In promiscous mode MPLS decapsulation and MPLS-aware NetFlow are optionally supported as well.
 
 
-============================
-= OBTAINING LATEST VERSION =
-============================
+================================
+= OBTAINING THE LATEST VERSION =
+================================
 
    $ git clone git://github.com/aabc/ipt-netflow.git ipt-netflow
    $ cd ipt-netflow
@@ -72,7 +72,7 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
 
 ** 1. Prepare Kernel source
 
-   If you have package system install kernel-devel package, otherwise install
+   If you have package system, install kernel-devel package, otherwise install
    raw kernel source from http://kernel.org matching _exactly_ version of your
    installed kernel.
 
@@ -86,19 +86,19 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
       ~# m-a prepare
 
    c) Otherwise, if you downloaded raw kernel sources don't forget to create
-    .config by copying it from your distribution's kernel. Its copy could reside
+    .config by copying it from your distribution's kernel. The copy could reside
     in /boot or sometimes in /proc, examples:
 
       kernel-src-dir/# cp /boot/config-`uname -r` .config
     or
       kernel-src-dir/# zcat /proc/config.gz > .config
 
-    Assuming you unpacked kernel source into `kernel-src-dir/' directory.
+    Assuming you unpacked the kernel source into `kernel-src-dir/' directory.
     Then run:
 
       kernel-src-dir/# make oldconfig
 
-    After that you'll need to prepare kernel for modules build:
+    After that you'll need to prepare kernel to build modules:
 
       kernel-src-dir/# make prepare modules_prepare
 
@@ -108,12 +108,12 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
 
 ** 2. Prepare Iptables
 
-   Before this step it also would be useful to install pkg-config if don't
-   already have.
+   Before this step it also would be useful to install pkg-config if it is not
+   already installed.
 
    If you have package system just install iptables-devel (or on Debian, Ubuntu
    and derivatives libxtables-dev if available, otherwise iptables-dev)
-   package, otherwise install iptables source matching version of your
+   package, otherwise install iptables source matching the version of your
    installation from ftp://ftp.netfilter.org/pub/iptables/
 
    a) What to do for Centos:
@@ -124,7 +124,7 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
 
       # apt-get install iptables-dev pkg-config
 
-   c) Otherwise, for raw iptables source build it and make install.
+   c) Otherwise, download iptables sources build and make install.
 
 ** 3. Prepare net-snmp (optional)
 
@@ -142,7 +142,7 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
 
   c) Otherwise install net-snmp from www.net-snmp.org
 
-** 4. Now, to actually build the module run:
+** 4. Now, to actually build the ipt-netflow module, install and run:
 
       ~/ipt-netflow# ./configure
       ~/ipt-netflow# make all install
@@ -152,11 +152,11 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
 
    Troubleshooting:
 
-     a) Sometimes you will want to add CC=gcc-3 to make command.
+     a) Sometimes you will have to add CC=gcc-3 to make command.
      Example: make CC=gcc-3.3
 
-     b) Compile module with actual kernel source compiled.
-     I.e. first compile kernel and boot into it, and then compile module.
+     b) Compile the module only after you compiled the actual kernel from sources.
+     I.e. first compile kernel and boot into it, and then compile the module.
      If you are using kernel-devel package check that its version matches
      your kernel package.
 
@@ -168,7 +168,7 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
        # apt-get install ruby ruby-dev ncurses-dev
        # gem install curses
 
-     z) If all fails create ticket at
+     z) If all fails create a ticket at
           https://github.com/aabc/ipt-netflow/issues
 
 ** 5. After this point you should be able to load module and
@@ -179,19 +179,18 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
 = Configure Options =
 =====================
 
-   Configure script allows to enable or disable optional features:
+   Configure script allows to enable or disable optional features at compile time:
 
      --enable-natevents
-         enables natevents (NEL) support, (this and option will require
-	 conntrack support to be enabled into kernel and conntack
-         module (nf_conntrack) loaded before ipt_NETFLOW. Usually this is
+         enables natevents (NEL) support, (this option will require
+	 conntrack support to be enabled in the kernel and conntack
+         module (nf_conntrack) loaded before ipt_NETFLOW is loaded. Usually this is
          done automatically because of `depmod', but if you don't do `make
          install' you'll need to load nf_conntrack manually.
          Read below for explanation of natevents.
 
      --enable-sampler
-         enables flow sampler. Read below for explanation of its configuration
-	 option.
+         enables flow sampler. See below for explanation of its configuration.
 
      --enable-sampler=hash
          additionally enables 'hash' sampler.
@@ -206,7 +205,7 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
      --enable-macaddress
          enables exporting of src and dst MAC addresses for every flow
          in v9/IPFIX. Difference in any of MAC address will be accounted
-         as differnt flow. I.e. MAC addresses will be part of flow key.
+         as differnt flow. I.e. MAC addresses will become part of flow key.
 
      --enable-vlan
          enables exporting of dot1q VLAN Ids and Priorities for every flow
@@ -218,9 +217,9 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
      --enable-direction
          enables exporting of flowDirection(61) Element for v9/IPFIX.
 
-         Packets captured in PREROUTING and INPUT chains will be accounted as
-         ingress flows(0), in OUTPUT and POSTROUTING as egress flows(1), and
-         in FORWARD will have flowDirection set to undefined value 255.
+         Packets captured in PREROUTING and INPUT chains will be accounted for as
+         ingress flows(0), in OUTPUT and POSTROUTING chains as egress flows(1), and
+         in FORWARD chain will have flowDirection set to undefined value 255.
 
      --enable-aggregation
          enables aggregation rules. Read below for explanation of aggregation.
@@ -236,19 +235,19 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
 	 Export ingressPhysicalInterface(252) and egressPhysicalInterface(253)
 	 (relevant for bridges) in V9 and IPFIX. If your collector does not
 	 support these Elements but you still need physdevs then use
-	 --enable-physdev-override, in that case physdevs will override normal
+	 --enable-physdev-override; in that case physdevs will override normal
 	 interface numbers ingressInterface(10) and egressInterface(14).
 
      --enable-promisc
-	 Enables capturing of promiscuous packets into raw/PREROUTING chain.
+	 Enables capturing packets in promiscuous mode in raw/PREROUTING chain.
 	 See README.promisc Solution 1 for usage details and example.
 
      --promisc-mpls
-	 Enables MPLS label stack decapsulation for promiscuous packets. (For
-	 IPv4 and IPv6 packets only). This also enables MPLS-aware NetFlow (v9
-	 and IPFIX), you may wish to specify with --promisc-mpls=n how much MPLS
-	 labels you want to be recorded and exported (default is 3, maximum is
-	 10, set to 0 to not report anything).
+	 Enables MPLS label stack decapsulation for passing by packets in promiscuous mode.
+         (For IPv4 and IPv6 packets only). This also enables MPLS-aware NetFlow (v9
+	 and IPFIX); with --promisc-mpls=n one can specify how many MPLS
+	 labels to record and export (default is 3, maximum is 10,
+         set to 0 to not report anything).
 
 
 ===========
@@ -259,30 +258,30 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
 
      # insmod ipt_NETFLOW.ko destination=127.0.0.1:2055 debug=1
 
-   Or if properly installed (make install; depmod) by this:
+   Or if properly installed (make install; depmod) like this:
 
      # modprobe ipt_NETFLOW destination=127.0.0.1:2055
 
    See, you may add options in insmod/modprobe command line, or add
    them in /etc/modprobe.conf or /etc/modprobe.d/ipt_NETFLOW.conf
-   like thus:
+   like this:
 
      options ipt_NETFLOW destination=127.0.0.1:2055 protocol=9 natevents=1
 
-2. Statistics is in /proc/net/stat/ipt_netflow
+2. Statistics is placed in /proc/net/stat/ipt_netflow
    Machine readable statistics is in /proc/net/stat/ipt_netflow_snmp
    To view boring slab statistics: grep ipt_netflow /proc/slabinfo
-   Dump of all flows is in /proc/net/stat/ipt_netflow_flows
+   All flows are in /proc/net/stat/ipt_netflow_flows
 
-3. You can view parameters and control them via sysctl, example:
+3. You can view parameters and change them via sysctl, example:
 
      # sysctl net.netflow
      # sysctl net.netflow.hashsize=32768
 
-   Note: For after-reboot configuration I recommend to store module parameters
-   in modprobe configs instead of storing them in /etc/sysctl.conf, as it's
-   less clear when init process will apply sysctl.conf, before of after
-   module's load.
+   Note: For boot-time configuration I recommend to store module parameters
+   in modprobe config files instead of storing them in /etc/sysctl.conf, as it's
+   less clear whether init process applies sysctl.conf before of after loading
+   the module.
 
 4. Example of directing all IPv4 traffic into the module:
 
@@ -290,14 +289,14 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
      # iptables -I INPUT -j NETFLOW
      # iptables -I OUTPUT -j NETFLOW
 
-   Note: It is preferable (because easier to understand) to _insert_
+   Note: It is preferable (because it's easier to understand) to _insert_
    NETFLOW target at the top of the chain, otherwise not all traffic may
    reach NETFLOW if your iptables configuration is complicated and some
-   other rule inadvertently consume the traffic (dropping or acepting before
+   other rule inadvertently consumes the traffic (dropps or acepts it before
    NETFLOW is reached). It's always good to test your configuration.
    Use  iptables -L -nvx  to check pkts/bytes counters on the rules.
 
-5. If you want to account IPv6 traffic you should use protocol 9 or 10.
+5. If you want to account for IPv6 traffic you should use protocol 9 or 10.
    Example of directing all IPv6 traffic into the module:
 
      # sysctl net.netflow.protocol=10
@@ -305,18 +304,18 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
      # ip6tables -I INPUT -j NETFLOW
      # ip6tables -I OUTPUT -j NETFLOW
 
-   Note: First enable right version of protocol and after that add ip6tables
+   Note: First enable the required version of the protocol and after that add ip6tables
      rules, otherwise you will get errors in dmesg.
 
-6. If you want to account NAT events (NEL):
+6. If you want to account for NAT events (NEL):
 
      # sysctl net.netflow.natevents=1
 
    Note that natevents feature is completely independent from traffic accounting
-   (it's using so called conntrack events), thus you don't need to set or change
+   (it's using a so called conntrack events), thus you don't need to set or change
    any iptables rules to use that. You may need to enable kernel config option
    CONFIG_NF_CONNTRACK_EVENTS though (if it isn't already enabled).
-   For details on how they are exported for different protocol versions see
+   For details on how the events are exported for different protocol versions see
    below.
 
 7. For SNMP support you will need to add this command into snmpd.conf to
@@ -325,20 +324,20 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
       dlmod netflow /usr/lib/snmp/dlmod/snmp_NETFLOW.so
 
    Restart snmpd for changes to take effect. Don't forget to properly configure
-   access control. Example simplest configuration may looks like (note that this
-   is whole /etc/snmp/snmpd.conf):
+   access control. THe simplest configuration file may looks like this (note that this
+   is the whole /etc/snmp/snmpd.conf):
 
       rocommunity public 127.0.0.1
       dlmod netflow /usr/lib/snmp/dlmod/snmp_NETFLOW.so
 
-   Note, that this config will also allow _full_ read-only access to the whole
+   Note, that this config allows _full_ read-only access to the whole
    linux MIB. To install IPT-NETFLOW-MIB locally, copy file IPT-NETFLOW-MIB.my
    into ~/.snmp/mibs/
 
-   * Detailed example of SNMP configuration is there:
-   * https://github.com/aabc/ipt-netflow/wiki/Configuring-SNMP-access
+   * Detailed example of SNMP configuration can be found here:
+     https://github.com/aabc/ipt-netflow/wiki/Configuring-SNMP-access
 
-   To check that MIB is installed well you may issue:
+   To check that MIB is correctly installed you may issue:
 
      $ snmptranslate -m IPT-NETFLOW-MIB -IR -Tp iptNetflowMIB
 
@@ -348,20 +347,20 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
 
      $ snmpwalk -v 1 -c public 127.0.0.1 -m IPT-NETFLOW-MIB iptNetflowMIB
 
-   Should output full MIB. If MIB is not installed try:
+   This should output the full MIB. If the MIB is not installed try:
 
      $ snmpget -v 1 -c public 127.0.0.1 .1.3.6.1.4.1.37476.9000.10.1.1.1.1.0
 
    Which should output STRING: "ipt_NETFLOW".
 
-   MIB provides access to very similar statistics that you have in
-   /proc/net/stat/ipt_netflow, you can read description of objects in
+   MIB provides access to very similar statistics that you get in
+   /proc/net/stat/ipt_netflow, you can read description of the objects in
    text file IPT-NETFLOW-MIB.my
 
    If you want to access to SNMP stat in machine readable form for your
-   scripts there is file /proc/net/stat/ipt_netflow_snmp
+   scripts there is a file /proc/net/stat/ipt_netflow_snmp
 
-   Note: Using of SNMP v2c or v3 is mandatory for most tables, because
+   Note: Use of SNMP v2c or v3 is mandatory for most tables, because
    this MIB uses 64-bit counters (Counter64) which is not supported in old
    SNMP v1. You should understand that 32-bit counter will wrap on 10Gbit
    traffic in just 3.4 seconds! So, always pass option `-v2c' or `-v3'
@@ -402,12 +401,12 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
    protocol=5
      - what version of NetFlow protocol to use. Default is 5.
        You can choose from 5, 9, or 10 (where 10 is IPFIX). If you plan
-       to account IPv6 traffic you should use protocol 9 or 10 (IPFIX),
+       to count IPv6 traffic you should use protocol 9 or 10 (IPFIX),
        because NetFlow v5 isn't compatible with IPv6.
 
    destination=127.0.0.1:2055
-     - where to export netflow, to this ip address. Port is optional, default
-       is 2055. You will see this connection in netstat like this:
+     - the address to send the netflow to. Port is optional, default
+       is 2055. You will see this connection in netstat output like this:
 
        udp 0 0 127.0.0.1:32772 127.0.0.1:2055 ESTABLISHED 
 
@@ -416,7 +415,7 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
        you should delimit port with 'p' or '#' character.
 
    destination=127.0.0.1:2055,192.0.0.1:2055
-     - mirror flows to two (can be more) addresses, separate addresses
+     - mirror flows to two (or more) addresses, separate addresses
        with comma.
 
    destination=127.0.0.1:2055@127.0.0.2
@@ -432,7 +431,7 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
        Note, that this is flow sampling (as of RFC 7014), not packet
        sampling (PSAMP).
 
-       There is three sampling modes:
+       There are three sampling modes:
 
          deterministic:  select each N-th observed flow; in IPFIX this mode
                          is called Systematic count-based Sampling;
@@ -443,15 +442,15 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
        (This 16383 limit is for compatibility with NetFlow v5.)
          Using 'deterministic' and 'random' sampling will not reduce resource
        usage caused by the module, because flows are sampled late in exporting
-       process. This will reduces amount of flows which go to the collector,
+       process. This will reduces the amount of flows which go to the collector,
        thus, reducing load on the collector.
          On the other hand, using 'hash' sampling will reduce CPU and memory
        load caused by the module, because flows are discarded early in the
        processing chain. They are discarded almost like in random sampler,
-       except that pseudo-random value is depend on the Flow Key hash for each
+       except that pseudo-random value depends on the Flow Key hash for each
        packet.
-         All required NetFlow/IPFIX information to signal use of sampling is
-       also sent to the collector. 'Hash' sampling will be presented as 'random'
+         All required NetFlow/IPFIX information to communicate the use of sampling is
+       also sent to the collector. 'Hash' sampling is presented as 'random'
        sampling to the collector, because of their similarity.
        Note, that Flow Sampling is compatible with NetFlow v5, v9, and IPFIX.
 
@@ -460,16 +459,16 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
        for NetFlow v9/IPFIX, or as dummy flows compatible with NetFlow v5.
        Default is 0 (don't send).
 
-       For NetFlow v5 protocol meaning of fields in dummy flows are such:
+       For NetFlow v5 protocol the meaning of the fields in dummy flows are as follows:
          Src IP, Src Port  is Pre-nat source address.
          Dst IP, Dst Port  is Post-nat destination address.
-           - These two fields made equal to data flows catched in FORWARD chain.
+           - These two fields are made equal to data flows catched in FORWARD chain.
          Nexthop, Src AS  is Post-nat source address for SNAT. Or,
          Nexthop, Dst AS  is Pre-nat destination address for DNAT.
          TCP Flags is SYN+SCK for start event, RST+FIN for stop event.
          Pkt/Traffic size is 0 (zero), so it won't interfere with accounting.
 
-       Natevents are compilation disabled by default, to enable you will need to
+       By default natevents are disabled at complie time, to enable one needs to
        add --enable-natevents option to ./configure script.
 
        For techical description of NAT Events see:
@@ -483,15 +482,15 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
        value is 1800.
 
    refresh-rate=20
-     - for NetFlow v9 and IPFIX it's rate how frequently to re-send templates
+     - for NetFlow v9 and IPFIX it determines how frequently to re-send templates
        (per packets). You probably don't need to change default (which is 20).
 
    timeout-rate=30
-     - for NetFlow v9 and IPFIX it's rate when to re-send old templates (in
+     - for NetFlow v9 and IPFIX it determines when to re-send old templates (in
        minutes). No need to change it.
 
    debug=0
-     - debug level (none).
+     - debug level (default: none).
 
    sndbuf=number
      - size of output socket buffer in bytes. I recommend you to put higher
@@ -501,32 +500,32 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
 
    hashsize=number
      - Hash table bucket size. Used for performance tuning.
-       Abstractly speaking, it should be minimum two times bigger than flows
-       you usually have, but not need to.
+       In theory, it should be at least two times larger than the number of flows
+       you usually have, but does not has to.
        Default is system memory dependent small enough value.
 
    maxflows=2000000
-     - Maximum number of flows to account. It's here to prevent DOS attacks.
+     - Maximum number of flows to account for. It's here to prevent DOS attacks.
        After this limit is reached new flows will not be accounted. Default is
        2000000, zero is unlimited.
 
    aggregation=string..
      - Few aggregation rules (or some say they are rule.)
 
-       Buffer for aggregation string 1024 bytes, and sysctl limit it
+       Buffer for aggregation string is 1024 bytes long, and sysctl limits it
          to ~700 bytes, so don't write there a lot.
-       Rules worked in definition order for each packet, so don't
+       Rules work in definition order for each packet, so don't
          write them a lot again.
-       Rules applied to both directions (dst and src).
-       Rules tried until first match, but for netmask and port
+       Rules are applied to both directions (dst and src).
+       Rules are tried until the first match, but for netmask and port
           aggregations separately.
-       Delimit them with commas.
+       Delimit rools with commas.
 
        Rules are of two kinds: for netmask aggregation
-          and port aggregation:
+          and for port aggregation:
 
        a) Netmask aggregation example: 192.0.0.0/8=16
-       Which mean to strip addresses matching subnet 192.0.0.0/8 to /16.
+       Which means to strip addresses matching subnet 192.0.0.0/8 to /16.
 
        b) Port aggregation example: 80-89=80
        Which mean to replace ports from 80 to 89 with 80.
@@ -538,7 +537,7 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
        you may add --disable-aggregation to ./configure script.
 
    snmp-rules=string...
-     - Few SNMP-index conversion rules similar to fproble-ulog.
+     - Few SNMP-index conversion rules are similar to fprobe-ulog.
 
        Quoting man fprobe-ulog:
 
@@ -552,26 +551,26 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
          SNMP-index will be taken from kernel."
 
        This implementation isn't optimized for performance (no rule caching
-       or hashing), but should be fast if rules list are short.
+       or hashing), but should be fast if the rules list is short.
 
-       Rules are parsed in order from first to last until first match.
+       Rules are parsed in order from the first to the last until the first match.
 
-       snmp-rules are compilation disabled by default, to enable you will need
+       by default snmp-rules are disabled at compile time, to enable you will need
        to add --enable-snmp option to ./configure script.
 
    scan-min=1
-     - Minimal interval between flow export scans. Sometimes could be useful
-       to reduce load on exporting CPU by increasing this interval. Value are
-       in kernel jiffies units (which is x/HZ seconds).
+     - Minimal interval between flow export scans. Sometimes it could be useful
+       to reduce load on exporting CPU by increasing this interval. Value is
+       measured in kernel jiffies (which is x/HZ seconds).
 
    promisc=1
-     - Enables promisc hack. See README.promisc Solution 1 for details.
+     - Enables promiscous hack. See README.promisc Solution 1 for details.
 
    exportcpu=number
      - Lock exporter to single CPU. This may be useful to fine control CPU
-       load. Common use case: with smp_affinity and RSS you spread packet
-       processing to all CPUs except one, and lock it to the exporter. While
-       exporter CPU load generally is not high, for someone it may be not
+       load. A common use case is: with smp_affinity and RSS you spread packet
+       processing to all CPUs except one, and lock that one CPU to run exporter.
+       While exporter CPU load generally is not high, sometimes it may not be
        desirable to combine it with packet processing on very highly loaded
        routers.
 
@@ -581,7 +580,7 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
 
    engine_id=number
      - Observation Domain ID (on IPFIX, Source Id on NetFlow v9, or Engine Id
-       on NetFlow v5) value to be exported. This may help your collector to
+       on NetFlow v5) value to be exported. This may help a collector to
        distinguish between multiple exporters. On Netflow v9 and IPFIX this
        value is 32-bit on NetFlow v5 only 8 low bits are significant.
        Default value is 0.
@@ -591,14 +590,14 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
          # echo number > /sys/module/ipt_NETFLOW/parameters/engine_id
 
 
-====================
-= HOW TO READ STAT =
-====================
+=====================
+= HOW TO READ STATS =
+=====================
 
   Statistics is your friend to fine tune and understand netflow module
   performance.
 
-  To see stat in human readable form:
+  To see stats in human readable form:
     # cat /proc/net/stat/ipt_netflow
 
   How to interpret the data:
@@ -631,24 +630,25 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
 
 > Promisc hack is disabled (observed 0 packets, discarded 0).
 
-  observed n: To see that promisc hack is really working.
+  observed n: To see that promiscuous hack is really working.
 
 > Natevents disabled, count start 0, stop 0.
 
     - Natevents mode disabled or enabled, and how much start or stop events
-      are reported.
+      were reported.
 
 > Flows: active 5187 (peak 83905 reached 0d0h1m ago), mem 283K, worker delay 100/1000 (37 ms, 0 us, 4:0 0 [3]).
 
   active X: currently active flows in memory cache.
     - for optimum CPU performance it is recommended to set hash table size to
-      at least twice of average of this value, or higher.
+      at least twice of the average of this value, or higher.
   peak X reached Y ago: peak value of active flows.
-  mem XK: how much kilobytes of memory currently taken by active flows.
-    - one active flow taking 56 bytes of memory.
-    - there is system limit on cache size too.
-  worker delay X/HZ: how frequently exporter scan flows table per second.
-  Rest is boring debug info.
+  mem XK: how much kilobytes of memory are currently taken by active flows.
+    - one active flow takes 56 bytes of memory.
+    - there is a system limit on cache size too.
+  worker delay X/HZ: how frequently exporter scans flows table per second.
+
+  The rest is the boring debug info.
 
 > Hash: size 8192 (mem 32K), metric 1.00, [1.00, 1.00, 1.00]. InHash: 1420 pkt, 364 K, InPDU 28, 6716.
 
@@ -762,13 +762,13 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
 = NetFlow considerations =
 ==========================
 
-  List of all IPFIX Elements http://www.iana.org/assignments/ipfix/ipfix.xhtml
+  A list of all IPFIX Elements: http://www.iana.org/assignments/ipfix/ipfix.xhtml
 
-  Flow Keys are Elements that distinguish flows. Quoting RFC: "If a Flow
+  Flow Keys are the Elements that distinguish flows. Quoting RFC: "If a Flow
   Record for a specific Flow Key value already exists, the Flow Record is
   updated; otherwise, a new Flow Record is created."
 
-  In this implementation following Elements are treated as Flow Keys:
+  In this implementation the following Elements are treated as Flow Keys:
 
      IPv4 source address:        sourceIPv4Address(8),
      IPv6 source address:        sourceIPv6Address(27),
@@ -781,7 +781,7 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
      IP TOS:                     ipClassOfService(5),
      and address family (IP or IPv6).
 
-  Additional Flow Keys if VLAN exporting is enabled:
+  Additional Flow Keys are used if VLAN exporting is enabled:
 
      First (outer) dot1q VLAN tag: dot1qVlanId(243) and
                                  dot1qPriority(244) for IPFIX,
@@ -789,20 +789,20 @@ ipt_NETFLOW linux 2.6.x-4.x kernel module by <abc@openwall.com> -- 2008-2018.
      Second (customer) dot1q VLAN tag: dot1qCustomerVlanId(245)
                                  and dot1qCustomerPriority(246).
 
-  Additional Flow Keys if MAC address exporting is enabled:
+  Additional Flow Keys are used if MAC address exporting is enabled:
 
      Destination MAC address:    destinationMacAddress(80),
      Source MAC address:         sourceMacAddress(56).
 
-  Additional Flow Keys if MPLS-aware NetFlow is enabled:
+  Additional Flow Keys are used if MPLS-aware NetFlow is enabled:
 
      Captured MPLS stack is fully treated as flow key (including TTL values),
      which is Elements from mplsTopLabelStackSection(70) to
      mplsLabelStackSection10(79), and, if present, mplsTopLabelTTL(200).
 
 
-  Other Elements are not Flow Keys. Note that outer interface, which is
-  egressInterface(14), is not regarded as Flow Key. Quoting RFC 7012: "For
+  Other Elements are not Flow Keys. Note that the sending interface, which is
+  egressInterface(14), is not regarded as a Flow Key. Quoting RFC 7012: "For
   Information Elements ... for which the value may change from packet to packet
   within a single Flow, the exported value of an Information Element is by
   default determined by the first packet observed for the corresponding Flow".
